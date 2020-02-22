@@ -13,9 +13,19 @@
         #messages { list-style-type: none; margin: 0; padding: 0; }
         #messages li { padding: 5px 10px; }
         #messages li:nth-child(odd) { background: #eee; }
+        #alert-message {
+          display: none;
+          background-color: greenyellow;
+          height: 100px;
+          width: 100%;
+          text-align: center;
+          font-weight: bold;
+          font-size: 20;
+        }
       </style>
 </head>
 <body>
+    <div id="alert-message"></div>
     <ul id="messages"></ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
@@ -25,12 +35,19 @@
     <script>
         $(function () {
           var socket = io();
+          var username = prompt("You name please?");
+          socket.emit('welcome', username);
           $('form').submit(function(e){
             e.preventDefault(); // prevents page reloading
             socket.emit('chat message', $('#m').val());
             $('#m').val('');
             return false;
           });
+          socket.on('welcome', function(username) {
+            console.log(username);
+            $('#alert-message').text(username + " Is connected!").fadeIn(400).fadeOut(1500);
+          });
+
           socket.on('chat message', function(msg) {
             $('#messages').append($('<li>').text(msg));
           });

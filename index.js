@@ -7,8 +7,12 @@ app.get('/', function(req, res) {
 });
 
 io.on('connection', function(socket) {
-    console.log('a user connected');
+    console.log('a user connected ' + socket.id);
     
+    socket.on('welcome', function(username) {
+        io.emit('welcome', username);
+    });
+
     socket.on('chat message', function(msg){
         console.log('message: ' + msg);
         io.emit('chat message', msg);
